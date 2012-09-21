@@ -37,7 +37,6 @@ nv.models.bullet = function() {
           markerz = markers.call(this, d, i).slice().sort(d3.descending),
           measurez = measures.call(this, d, i).slice().sort(d3.descending);
 
-          nv.log(rangez, markerz, measurez);
 
       //------------------------------------------------------------
       // Setup Scales
@@ -45,12 +44,12 @@ nv.models.bullet = function() {
       // Compute the new x-scale.
       var MaxX = Math.max(rangez[0] ? rangez[0]:0 , markerz[0] ? markerz[0] : 0 , measurez[0] ? measurez[0] : 0)
       var x1 = d3.scale.linear()
-          .domain([0, MaxX])]).nice()  // TODO: need to allow forceX and forceY, and xDomain, yDomain
+          .domain([0, MaxX]).nice()  // TODO: need to allow forceX and forceY, and xDomain, yDomain
           .range(reverse ? [availableWidth, 0] : [0, availableWidth]);
 
       // Retrieve the old x-scale, if this is an update.
       var x0 = this.__chart__ || d3.scale.linear()
-          .domain([0, Infinity]).nice()
+          .domain([0, Infinity])
           .range(x1.range());
 
       // Stash the new scale.
