@@ -926,13 +926,16 @@ nv.models.bullet = function() {
     , measures = function(d) { return d.measures }
     , forceX = [0] // List of numbers to Force into the X scale (ie. 0, or a max / min, etc.)
     , width = 380
-    , height = 30
+    , height = 20
     , tickFormat = null
     , dispatch = d3.dispatch('elementMouseover', 'elementMouseout')
+    , maxRange = 0
+    , maxMarker = 0
+    , maxMeasure = 0
     ;
 
   //============================================================
-
+    
 
   function chart(selection) {
     selection.each(function(d, i) {
@@ -945,7 +948,6 @@ nv.models.bullet = function() {
       var rangez = ranges.call(this, d, i).slice().sort(d3.descending),
           markerz = markers.call(this, d, i).slice().sort(d3.descending),
           measurez = measures.call(this, d, i).slice().sort(d3.descending);
-
 
       //------------------------------------------------------------
       // Setup Scales
@@ -1023,7 +1025,7 @@ nv.models.bullet = function() {
           .attr('width', w0)
           .attr('height', availableHeight / 3)
           .attr('x', reverse ? x0 : 0)
-          .attr('y', availableHeight / 3)
+          .attr('y', availableHeight)
           .on('mouseover', function(d) { 
               dispatch.elementMouseover({
                 value: d,
@@ -1172,12 +1174,12 @@ nv.models.bulletChart = function() {
 
   var orient = 'left' // TODO top & bottom
     , reverse = false
-    , margin = {top: 5, right: 40, bottom: 20, left: 120}
+    , margin = {top: 5, right: 01, bottom: 20, left: 40}
     , ranges = function(d) { return d.ranges }
     , markers = function(d) { return d.markers }
     , measures = function(d) { return d.measures }
     , width = null
-    , height = 55
+    , height = 40
     , tickFormat = null
     , tooltips = true
     , tooltip = function(key, x, y, e, graph) {
@@ -1199,7 +1201,6 @@ nv.models.bulletChart = function() {
     var offsetElement = parentElement.parentNode.parentNode,
         left = e.pos[0] + offsetElement.offsetLeft + margin.left,
         top = e.pos[1] + offsetElement.offsetTop + margin.top;
-
     var content = '<h3>' + e.label + '</h3>' +
             '<p>' + e.value + '</p>';
 
@@ -1212,12 +1213,17 @@ nv.models.bulletChart = function() {
   function chart(selection) {
     selection.each(function(d, i) {
       var container = d3.select(this);
-
+      if (i==1) {
+        nv.log(d3.select(container[0][0]))
+        nv.log(d3.select(container[0][0].childNodes))
+        nv.log(d3.select(container[0][0].childNodes)[0])
+        nv.log(d3.select(container[0][0].childNodes.attributes))
+      }
       var availableWidth = (width  || parseInt(container.style('width')) || 960)
                              - margin.left - margin.right,
           availableHeight = height - margin.top - margin.bottom,
           that = this;
-
+      nv.log(availableWidth)
 
       chart.update = function() { chart(selection) };
       chart.container = this;
@@ -1248,25 +1254,22 @@ nv.models.bulletChart = function() {
 
       //------------------------------------------------------------
 
-
-
       var rangez = ranges.call(this, d, i).slice().sort(d3.descending),
           markerz = markers.call(this, d, i).slice().sort(d3.descending),
           measurez = measures.call(this, d, i).slice().sort(d3.descending);
-
 
       //------------------------------------------------------------
       // Setup containers and skeleton of chart
 
       var wrap = container.selectAll('g.nv-wrap.nv-bulletChart').data([d]);
-      var wrapEnter = wrap.enter().append('g').attr('class', 'nvd3 nv-wrap nv-bulletChart');
+      var wrapEnter = wrap.enter().append('g').attr('class', 'nvd3 nv-wrap nv-bulletChart').attr('id',function(d) {return 'container' + d.title});
       var gEnter = wrapEnter.append('g');
       var g = wrap.select('g');
 
       gEnter.append('g').attr('class', 'nv-bulletWrap');
       gEnter.append('g').attr('class', 'nv-titles');
 
-      wrap.attr('transform', 'translate(' + margin.left + ',' + ( margin.top + i*height )+ ')');
+      wrap.attr('transform', 'translate(' + margin.left + ',' + ( margin.top + i*(height-margin.top-margin.bottom+1) )+ ')');
 
       //------------------------------------------------------------
 
@@ -1302,11 +1305,10 @@ nv.models.bulletChart = function() {
           return 'translate(' + x(d) + ',0)';
         };
       }
-      */
+      //*/
 
       var w0 = function(d) { return Math.abs(x0(d) - x0(0)) }, // TODO: could optimize by precalculating x0(0) and x1(0)
           w1 = function(d) { return Math.abs(x1(d) - x1(0)) };
-
 
       var title = gEnter.select('.nv-titles').append("g")
           .attr("text-anchor", "end")
@@ -1320,8 +1322,6 @@ nv.models.bulletChart = function() {
           .attr("dy", "1em")
           .text(function(d) { return d.subtitle; });
 
-
-
       bullet
         .width(availableWidth)
         .height(availableHeight)
@@ -1330,63 +1330,70 @@ nv.models.bulletChart = function() {
 
       d3.transition(bulletWrap).call(bullet);
 
+      //*
+      //Allow only one scale for all bullets
+      if (i==selection[0].length-1){
+      /*///
+      //Allow all scales
+      if (true) {
+      //*///
+
+        // Compute the tick format.
+        var format = tickFormat || x1.tickFormat(8);
 
 
-      // Compute the tick format.
-      var format = tickFormat || x1.tickFormat(8);
+        // Update the tick groups.
+        var tick = g.selectAll('g.nv-tick')
+            .data(x1.ticks(8), function(d) {
+              return this.textContent || format(d);
+            });
 
-      // Update the tick groups.
-      var tick = g.selectAll('g.nv-tick')
-          .data(x1.ticks(8), function(d) {
-            return this.textContent || format(d);
-          });
+        // Initialize the ticks with the old scale, x0.
+        var tickEnter = tick.enter().append('g')
+            .attr('class', 'nv-tick')
+            .attr('transform', function(d) { return 'translate(' + x0(d) + ',0)' })
+            .style('opacity', 1e-6);
 
-      // Initialize the ticks with the old scale, x0.
-      var tickEnter = tick.enter().append('g')
-          .attr('class', 'nv-tick')
-          .attr('transform', function(d) { return 'translate(' + x0(d) + ',0)' })
-          .style('opacity', 1e-6);
+        tickEnter.append('line')
+            .attr('y1', availableHeight)
+            .attr('y2', availableHeight * 7 / 6);
 
-      tickEnter.append('line')
-          .attr('y1', availableHeight)
-          .attr('y2', availableHeight * 7 / 6);
+        tickEnter.append('text')
+            .attr('text-anchor', 'middle')
+            .attr('dy', '1em')
+            .attr('y', availableHeight * 7 / 6)
+            .text(format);
 
-      tickEnter.append('text')
-          .attr('text-anchor', 'middle')
-          .attr('dy', '1em')
-          .attr('y', availableHeight * 7 / 6)
-          .text(format);
+        // Transition the entering ticks to the new scale, x1.
+        d3.transition(tickEnter)
+            .attr('transform', function(d) { return 'translate(' + x1(d) + ',0)' })
+            .style('opacity', 1);
 
-      // Transition the entering ticks to the new scale, x1.
-      d3.transition(tickEnter)
-          .attr('transform', function(d) { return 'translate(' + x1(d) + ',0)' })
-          .style('opacity', 1);
+        // Transition the updating ticks to the new scale, x1.
+        var tickUpdate = d3.transition(tick)
+            .attr('transform', function(d) { return 'translate(' + x1(d) + ',0)' })
+            .style('opacity', 1);
 
-      // Transition the updating ticks to the new scale, x1.
-      var tickUpdate = d3.transition(tick)
-          .attr('transform', function(d) { return 'translate(' + x1(d) + ',0)' })
-          .style('opacity', 1);
+        tickUpdate.select('line')
+            .attr('y1', availableHeight)
+            .attr('y2', availableHeight * 7 / 6);
 
-      tickUpdate.select('line')
-          .attr('y1', availableHeight)
-          .attr('y2', availableHeight * 7 / 6);
+        tickUpdate.select('text')
+            .attr('y', availableHeight * 7 / 6);
 
-      tickUpdate.select('text')
-          .attr('y', availableHeight * 7 / 6);
-
-      // Transition the exiting ticks to the new scale, x1.
-      d3.transition(tick.exit())
-          .attr('transform', function(d) { return 'translate(' + x1(d) + ',0)' })
-          .style('opacity', 1e-6)
-          .remove();
-
-
+        // Transition the exiting ticks to the new scale, x1.
+        d3.transition(tick.exit())
+            .attr('transform', function(d) { return 'translate(' + x1(d) + ',0)' })
+            .style('opacity', 1e-6)
+            .remove();
+    }
+      
       //============================================================
       // Event Handling/Dispatching (in chart's scope)
       //------------------------------------------------------------
 
       dispatch.on('tooltipShow', function(e) {
-        if (tooltips) showTooltip(e, that.parentNode);
+        if (tooltips) showTooltip(e, that);
       });
 
       //============================================================
