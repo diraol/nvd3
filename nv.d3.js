@@ -921,17 +921,14 @@ nv.models.bullet = function() {
   var margin = {top: 0, right: 0, bottom: 0, left: 0}
     , orient = 'left' // TODO top & bottom
     , reverse = false
-    , ranges = function(d) { return d.ranges }
-    , markers = function(d) { return d.markers }
-    , measures = function(d) { return d.measures }
+    , ranges = function(d) { return d.dados2008 }
+    , markers = function(d) { return d.valorFinal2008 }
+    , measures = function(d) { return d.dados2012 }
     , forceX = [0] // List of numbers to Force into the X scale (ie. 0, or a max / min, etc.)
     , width = 380
     , height = 20
     , tickFormat = null
     , dispatch = d3.dispatch('elementMouseover', 'elementMouseout')
-    , maxRange = 0
-    , maxMarker = 0
-    , maxMeasure = 0
     ;
 
   //============================================================
@@ -996,17 +993,19 @@ nv.models.bullet = function() {
           .attr('width', w0)
           .attr('height', availableHeight)
           .attr('x', reverse ? x0 : 0)
-          .on('mouseover', function(d,i) { 
-              dispatch.elementMouseover({
-                value: d,
-                label: (i <= 0) ? 'Maximum' : (i > 1) ? 'Minimum' : 'Mean', //TODO: make these labels a variable
-                pos: [x1(d), heightFromTop]
-              })
+          .on('mouseover', function(d,i) {
+              if (i>0) {
+                dispatch.elementMouseover({
+                    value: d,
+                    label: (i <= 0) ? '' : (i > 1) ? 'Eleitos em<br/>Primeiro Turno<br/>em 2008:' : 'Eleitos em<br/>Segundo Turno</br>em 2008:', //TODO: make these labels a variable
+                    pos: [x1(d), heightFromTop]
+                })
+              }
           })
           .on('mouseout', function(d,i) { 
               dispatch.elementMouseout({
                 value: d,
-                label: (i <= 0) ? 'Minimum' : (i >=1) ? 'Maximum' : 'Mean' //TODO: make these labels a variable
+                label: (i <= 0) ? '' : (i >=1) ? 'Eleitos em<br/>Primeiro Turno<br/>em 2008:' : 'Eleitos em<br/>Segundo Turno</br>em 2008:' //TODO: make these labels a variable
               })
           })
 
@@ -1025,11 +1024,11 @@ nv.models.bullet = function() {
           .attr('width', w0)
           .attr('height', availableHeight / 3)
           .attr('x', reverse ? x0 : 0)
-          .attr('y', availableHeight)
-          .on('mouseover', function(d) { 
+          .attr('y', availableHeight / 3)
+          .on('mouseover', function(d,i) { 
               dispatch.elementMouseover({
                 value: d,
-                label: 'Current', //TODO: make these labels a variable
+                label: (i<=0) ? 'Total possível de eleitos<br/>ao fim do segundo turno:' : 'Total de eleitos<br/>em primeiro turno:', //TODO: make these labels a variable
                 pos: [x1(d), heightFromTop]
               })
           })
@@ -1060,14 +1059,14 @@ nv.models.bullet = function() {
           .on('mouseover', function(d,i) {
               dispatch.elementMouseover({
                 value: d,
-                label: 'Previous',
+                label: 'Total de Prefeitos eleitos em 2008',
                 pos: [x1(d), heightFromTop]
               })
           })
           .on('mouseout', function(d,i) {
               dispatch.elementMouseout({
                 value: d,
-                label: 'Previous'
+                label: 'Total de Prefeitos eleitos em 2008'
               })
           });
 
@@ -1175,11 +1174,11 @@ nv.models.bulletChart = function() {
   var orient = 'left' // TODO top & bottom
     , reverse = false
     , margin = {top: 5, right: 01, bottom: 20, left: 40}
-    , ranges = function(d) { return d.ranges }
-    , markers = function(d) { return d.markers }
-    , measures = function(d) { return d.measures }
+    , ranges = function(d) { return d.dados2008 }
+    , markers = function(d) { return d.valorFinal2008 }
+    , measures = function(d) { return d.dados2012 }
     , width = null
-    , height = 40
+    , height = 30
     , tickFormat = null
     , tooltips = true
     , tooltip = function(key, x, y, e, graph) {
@@ -1213,17 +1212,10 @@ nv.models.bulletChart = function() {
   function chart(selection) {
     selection.each(function(d, i) {
       var container = d3.select(this);
-      if (i==1) {
-        nv.log(d3.select(container[0][0]))
-        nv.log(d3.select(container[0][0].childNodes))
-        nv.log(d3.select(container[0][0].childNodes)[0])
-        nv.log(d3.select(container[0][0].childNodes.attributes))
-      }
       var availableWidth = (width  || parseInt(container.style('width')) || 960)
                              - margin.left - margin.right,
           availableHeight = height - margin.top - margin.bottom,
           that = this;
-      nv.log(availableWidth)
 
       chart.update = function() { chart(selection) };
       chart.container = this;
@@ -1312,7 +1304,7 @@ nv.models.bulletChart = function() {
 
       var title = gEnter.select('.nv-titles').append("g")
           .attr("text-anchor", "end")
-          .attr("transform", "translate(-6," + (height - margin.top - margin.bottom) / 2 + ")");
+          .attr("transform", "translate(-6," + (height - margin.top - margin.bottom + 8) / 2 + ")");
       title.append("text")
           .attr("class", "nv-title")
           .text(function(d) { return d.title; });
