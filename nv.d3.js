@@ -1048,14 +1048,14 @@ nv.models.bullet = function() {
 
 
       // Update the marker lines.
-      var marker = g.selectAll('path.nv-markerTriangle')
+      var marker = g.selectAll('path.nv-markerLine')
           .data(markerz);
 
-      var h3 =  availableHeight / 6;
+      var h3 =  availableHeight / 2;
       marker.enter().append('path')
-          .attr('class', 'nv-markerTriangle')
+          .attr('class', 'nv-markerLine')
           .attr('transform', function(d) { return 'translate(' + x0(d) + ',' + (availableHeight / 2) + ')' })
-          .attr('d', 'M0,' + h3 + 'L' + h3 + ',' + (-h3) + ' ' + (-h3) + ',' + (-h3) + 'Z')
+          .attr('d', 'M0 ' + (-h3/2) + ' v ' + h3 + ' ' + (-h3))
           .on('mouseover', function(d,i) {
               dispatch.elementMouseover({
                 value: d,
