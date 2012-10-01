@@ -988,6 +988,19 @@ nv.models.bullet = function() {
       var range = g.selectAll('rect.nv-range')
           .data(rangez);
 
+      function legenda_partido() {
+//####PAREI AQUI####
+        var conteudo_html = '<h2>' + projecao.charAt(0).toUpperCase() + projecao.slice(1) + ' do '+ d.title + '</h2>'
+            conteudo_html += '<span class="dados2008">DADOS 2008</span><br/>'
+            conteudo_html += '<span class="titulo-dado">Eleitos no 1˚ turno:</span> ' + d.dados2008[0] + '<br/>'
+            conteudo_html += '<span class="titulo-dado">Eleitos ou classificados para o 2˚ turno:</span> ' + d.dados2008[1] + '<br/>'
+            conteudo_html += '<span class="titulo-dado">Eleitos no final da eleição:</span> ' + d.valorFinal2008[0] + '<br/>'
+            conteudo_html += '<span class="dados2012">DADOS 2012</span><br/>'
+            conteudo_html += '<span class="titulo-dado">Eleitos no 1˚ turno:</span> ' + d.dados2012[0] + '<br/>'
+            conteudo_html += '<span class="titulo-dado">Eleitos ou classificados para o 2˚ turno:</span> ' + d.dados2012[1] + '<br/>'
+        return conteudo_html
+      }
+
       range.enter().append('rect')
           .attr('class', function(d, i) { return 'nv-range nv-s' + i; })
           .attr('width', w0)
@@ -996,6 +1009,7 @@ nv.models.bullet = function() {
           .on('mouseover', function(d,i) {
               if (i>0) {
                 dispatch.elementMouseover({
+                    conteudo: legenda_partido(),
                     value: d,
                     label: (i <= 0) ? '' : (i > 1) ? 'Eleitos em<br/>Primeiro Turno<br/>em 2008:' : 'Eleitos em<br/>Segundo Turno</br>em 2008:', //TODO: make these labels a variable
                     pos: [x1(d), heightFromTop]
@@ -1027,6 +1041,7 @@ nv.models.bullet = function() {
           .attr('y', availableHeight / 3)
           .on('mouseover', function(d,i) { 
               dispatch.elementMouseover({
+                    conteudo: legenda_partido(),
                 value: d,
                 label: (i<=0) ? 'Total possível de eleitos<br/>ao fim do segundo turno:' : 'Total de eleitos<br/>em primeiro turno:', //TODO: make these labels a variable
                 pos: [x1(d), heightFromTop]
@@ -1058,6 +1073,7 @@ nv.models.bullet = function() {
           .attr('d', 'M0 ' + (-h3/2) + ' v ' + h3 + ' ' + (-h3))
           .on('mouseover', function(d,i) {
               dispatch.elementMouseover({
+                    conteudo: legenda_partido(),
                 value: d,
                 label: 'Total de Prefeitos eleitos em 2008',
                 pos: [x1(d), heightFromTop]
@@ -1164,6 +1180,7 @@ nv.models.bullet = function() {
 // http://projects.instantcognition.com/protovis/bulletchart/
 nv.models.bulletChart = function() {
 
+
   //============================================================
   // Public Variables with Default Settings
   //------------------------------------------------------------
@@ -1203,7 +1220,7 @@ nv.models.bulletChart = function() {
     var content = '<h3>' + e.label + '</h3>' +
             '<p>' + e.value + '</p>';
 
-    nv.tooltip.show([left, top], content, e.value < 0 ? 'e' : 'w', null, offsetElement.parentNode);
+    nv.tooltip.show([left, top], e.conteudo, e.value < 0 ? 'e' : 'w', null, offsetElement.parentNode);
   };
 
   //============================================================
