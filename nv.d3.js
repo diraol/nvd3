@@ -328,7 +328,7 @@ nv.models.bullet = function() {
       var availableWidth = width - margin.left - margin.right,
           availableHeight = height - margin.top - margin.bottom,
           container = d3.select(this),
-          mainGroup = this.parentNode.parentNode.getAttribute('transform')
+          mainGroup = this.parentNode.parentNode.getAttribute('transform'),
           heightFromTop = parseInt(mainGroup.replace(/.*,(\d+)\)/,"$1")) //TODO: There should be a smarter way to get this value
 
       var rangez = ranges.call(this, d, i).slice().sort(d3.descending),
