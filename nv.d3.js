@@ -989,15 +989,12 @@ nv.models.bullet = function() {
           .data(rangez);
 
       function legenda_partido() {
-//####PAREI AQUI####
-        var conteudo_html = '<h2>' + projecao.charAt(0).toUpperCase() + projecao.slice(1) + ' do '+ d.title + '</h2>'
-            conteudo_html += '<span class="dados2008">DADOS 2008</span><br/>'
-            conteudo_html += '<span class="titulo-dado">Eleitos no 1˚ turno:</span> <span class="valor">' + d.dados2008[0] + '</span><br/>'
-            conteudo_html += '<span class="titulo-dado">Eleitos ou classificados para o 2˚ turno:</span> <span class="valor">' + d.dados2008[1] + '</span><br/>'
-            conteudo_html += '<span class="titulo-dado">Eleitos no final da eleição:</span> <span class="valor">' + d.valorFinal2008[0] + '</span><br/>'
-            conteudo_html += '<br/><span class="dados2012">DADOS 2012</span><br/>'
-            conteudo_html += '<span class="titulo-dado">Eleitos no 1˚ turno:</span> <span class="valor">' + d.dados2012[0] + '</span><br/>'
-            conteudo_html += '<span class="titulo-dado">Eleitos ou classificados para o 2˚ turno:</span> <span class="valor">' + d.dados2012[1] + '</span><br/>'
+        var conteudo_html = '<table><caption>' + projecao + ' do '+ d.title + '</caption>'
+            conteudo_html += '<thead><tr><th></th><th>2008</th><th>2012</th><tr/></thead><tbody>'
+            conteudo_html += '<tr><th>Eleitos no 1˚ turno</th><td>'+d.dados2008[0]+'</td><td>'+d.dados2012[0]+'</td></tr>'
+            conteudo_html += '<tr><th>Eleitos no 1˚ turno e<br/>classificados para<br/>o 2˚ turno</th><td>'+d.dados2008[1]+'</td><td>'+d.dados2012[1]+'</td></tr>'
+            conteudo_html += '<tr><th>Total de eleitos<br/>após 2˚ turno</th><td>'+d.valorFinal2008[0]+'</td><td></td></tr>'
+            conteudo_html += '</tbody></table>'
         return conteudo_html
       }
 
