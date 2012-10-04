@@ -645,12 +645,10 @@ nv.models.bulletChart = function() {
   //------------------------------------------------------------
 
   var showTooltip = function(e, parentElement) {
-    var offsetElement = parentElement.parentNode.parentNode,
-        left = e.pos[0] + offsetElement.offsetLeft + margin.left,
-        top = e.pos[1] + offsetElement.offsetTop + margin.top;
     var content = '<h3>' + e.label + '</h3>' +
                 '<p>' + e.value + '</p>';
-
+    left = d3.mouse(parentElement)[0]
+    top = d3.mouse(parentElement)[1]
     nv.tooltip.show([left, top], e.conteudo, e.value < 0 ? 'e' : 'w', null, offsetElement.parentNode);
   };
 
