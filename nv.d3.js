@@ -384,10 +384,14 @@ nv.models.bullet = function() {
                 else
                     conteudo_html = '<table><caption>Votos recebidos pelo '+ jsonAtual.split("_")[1].toUpperCase() + ' (' + d.title.toUpperCase() + ')</caption>'
                 conteudo_html += '<thead><tr><th></th><th>2008</th><th>2012</th><tr/></thead><tbody>'
-                conteudo_html += '<tr><th>Referente ao 1˚ turno</th><td>' + d.dados2008[0] + '</td><td>' + d.dados2012[0] + '</td></tr>'
-                conteudo_html += '<tr><th>Possíveis referente no 2˚ turno</th><td>' + (d.dados2008[1] - d.dados2008[0]) + '</td>'
-                conteudo_html += '<td>' + (d.dados2012[1] - d.dados2012[0]) + '</td></tr>'
-                conteudo_html += '<tr><th>Total após o 2˚ turno</th><td>' + d.valorFinal2008[0] + '</td><td></td></tr>'
+                conteudo_html += '<tr><th>Referente ao 1˚ turno</th>'
+                    conteudo_html += '<td class="leg20081turno">' + d.dados2008[0] + '</td>'
+                    conteudo_html += '<td class="leg20121turno">' + d.dados2012[0] + '</td></tr>'
+                conteudo_html += '<tr><th>Possíveis referente no 2˚ turno</th>'
+                    conteudo_html += '<td class="leg20082turno">' + (d.dados2008[1] - d.dados2008[0]) + '</td>'
+                    conteudo_html += '<td class="leg20122turno">' + (d.dados2012[1] - d.dados2012[0]) + '</td></tr>'
+                conteudo_html += '<tr><th>Total após o 2˚ turno</th>'
+                    conteudo_html += '<td class="leg2008final">' + d.valorFinal2008[0] + '</td><td></td></tr>'
                 conteudo_html += '</tbody></table>'
             
             } else if (projecao=="eleitorado") {
@@ -397,10 +401,14 @@ nv.models.bullet = function() {
                 else
                     conteudo_html = '<table><caption>Eleitorado a ser governado pelo '+ jsonAtual.split("_")[1].toUpperCase() + ' (' + d.title.toUpperCase() + ')</caption>'
                 conteudo_html += '<thead><tr><th></th><th>2008</th><th>2012</th><tr/></thead><tbody>'
-                conteudo_html += '<tr><th>Referente ao 1˚ turno</th><td>' + d.dados2008[0] + '</td><td>' + d.dados2012[0] + '</td></tr>'
-                conteudo_html += '<tr><th>Possível referente ao 2˚ turno</th><td>' + (d.dados2008[1] - d.dados2008[0]) + '</td>'
-                conteudo_html += '<td>' + (d.dados2012[1] - d.dados2012[0]) + '</td></tr>'
-                conteudo_html += '<tr><th>Total após o 2˚ turno</th><td>' + d.valorFinal2008[0] + '</td><td></td></tr>'
+                conteudo_html += '<tr><th>Referente ao 1˚ turno</th>'
+                    conteudo_html += '<td class="leg20081turno">' + d.dados2008[0] + '</td>'
+                    conteudo_html += '<td class="leg20121turno">' + d.dados2012[0] + '</td></tr>'
+                conteudo_html += '<tr><th>Possível referente ao 2˚ turno</th>'
+                    conteudo_html += '<td class="leg20082turno">' + (d.dados2008[1] - d.dados2008[0]) + '</td>'
+                    conteudo_html += '<td class="leg20122turno">' + (d.dados2012[1] - d.dados2012[0]) + '</td></tr>'
+                conteudo_html += '<tr><th>Total após o 2˚ turno</th>'
+                    conteudo_html += '<td class="leg2008final">' + d.valorFinal2008[0] + '</td><td></td></tr>'
                 conteudo_html += '</tbody></table>'
             
             } else {
@@ -410,10 +418,14 @@ nv.models.bullet = function() {
                 else
                     conteudo_html = '<table><caption>Prefeitos do '+ d.title.toUpperCase() + '</caption>'
                 conteudo_html += '<thead><tr><th></th><th>2008</th><th>2012</th><tr/></thead><tbody>'
-                conteudo_html += '<tr><th>Eleitos no 1˚ turno</th><td>' + d.dados2008[0] + '</td><td>' + d.dados2012[0] + '</td></tr>'
-                conteudo_html += '<tr><th>Classificados para<br/> o 2˚ turno</th><td>' + (d.dados2008[1] - d.dados2008[0]) + '</td>'
-                conteudo_html += '<td>' + (d.dados2012[1] - d.dados2012[0]) + '</td></tr>'
-                conteudo_html += '<tr><th>Total após o 2˚ turno</th><td>' + d.valorFinal2008[0] + '</td><td></td></tr>'
+                conteudo_html += '<tr><th>Eleitos no 1˚ turno</th>'
+                    conteudo_html += '<td class="leg20081turno">' + d.dados2008[0] + '</td>'
+                    conteudo_html += '<td class="leg20121turno">' + d.dados2012[0] + '</td></tr>'
+                conteudo_html += '<tr><th>Classificados para<br/> o 2˚ turno</th>'
+                    conteudo_html += '<td class="leg20082turno">' + (d.dados2008[1] - d.dados2008[0]) + '</td>'
+                    conteudo_html += '<td class="leg20122turno">' + (d.dados2012[1] - d.dados2012[0]) + '</td></tr>'
+                conteudo_html += '<tr><th>Total após o 2˚ turno</th>'
+                    conteudo_html += '<td class="leg2008final">' + d.valorFinal2008[0] + '</td><td></td></tr>'
                 conteudo_html += '</tbody></table>'
             }
                     return conteudo_html
