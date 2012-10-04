@@ -313,7 +313,7 @@ nv.models.bullet = function() {
     , ranges = function(d) { return d.dados2008 }
     , markers = function(d) { return d.valorFinal2008 }
     , measures = function(d) { return d.dados2012 }
-    , forceX = [0] // List of numbers to Force into the X scale (ie. 0, or a max / min, etc.)
+    , forceX = 0 // List of numbers to Force into the X scale (ie. 0, or a max / min, etc.)
     , width = 380
     , height = 20
     , tickFormat = null
@@ -334,14 +334,13 @@ nv.models.bullet = function() {
       var rangez = ranges.call(this, d, i).slice().sort(d3.descending),
           markerz = markers.call(this, d, i).slice().sort(d3.descending),
           measurez = measures.call(this, d, i).slice().sort(d3.descending);
-
       //------------------------------------------------------------
       // Setup Scales
 
       // Compute the new x-scale.
       var MaxX = Math.max(rangez[0] ? rangez[0]:0 , markerz[0] ? markerz[0] : 0 , measurez[0] ? measurez[0] : 0)
       var x1 = d3.scale.linear()
-          .domain([0, MaxX]).nice()  // TODO: need to allow forceX and forceY, and xDomain, yDomain
+          .domain([0, forceX]).nice()  // TODO: need to allow forceX and forceY, and xDomain, yDomain
           .range(reverse ? [availableWidth, 0] : [0, availableWidth]);
 
       // Retrieve the old x-scale, if this is an update.
@@ -583,6 +582,7 @@ nv.models.bulletChart = function() {
     , width = null
     , height = 30
     , tickFormat = null
+    , forceX = 0
     , tooltips = true
     , tooltip = function(key, x, y, e, graph) {
         return '<h3>' + e.label + '</h3>' +
@@ -604,15 +604,25 @@ nv.models.bulletChart = function() {
         left = e.pos[0] + offsetElement.offsetLeft + margin.left,
         top = e.pos[1] + offsetElement.offsetTop + margin.top;
     var content = '<h3>' + e.label + '</h3>' +
-            '<p>' + e.value + '</p>';
+                '<p>' + e.value + '</p>';
 
     nv.tooltip.show([left, top], e.conteudo, e.value < 0 ? 'e' : 'w', null, offsetElement.parentNode);
   };
 
   //============================================================
-
-
+  
+  
   function chart(selection) {
+    selection.each(function(d) {
+           for (var i=0; i < d.dados2008.length; i++)
+               if (d.dados2008[i] > forceX)
+                   forceX = d.dados2008[i]
+           for (var i=0; i < d.dados2012.length; i++)
+               if (d.dados2012[i] > forceX)
+                   forceX = d.dados2012[i]
+     })   
+    bullet.forceX(forceX)
+    
     selection.each(function(d, i) {
       var container = d3.select(this);
       var availableWidth = (width  || parseInt(container.style('width')) || 960)
@@ -672,7 +682,7 @@ nv.models.bulletChart = function() {
       // Compute the new x-scale.
       var MaxX = Math.max(rangez[0] ? rangez[0]:0 , markerz[0] ? markerz[0] : 0 , measurez[0] ? measurez[0] : 0)
       var x1 = d3.scale.linear()
-          .domain([0, MaxX]).nice()  // TODO: need to allow forceX and forceY, and xDomain, yDomain
+          .domain([0, forceX]).nice()  // TODO: need to allow forceX and forceY, and xDomain, yDomain
           .range(reverse ? [availableWidth, 0] : [0, availableWidth]);
 
       // Retrieve the old x-scale, if this is an update.
