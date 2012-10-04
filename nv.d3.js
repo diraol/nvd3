@@ -696,7 +696,7 @@ nv.models.bulletChart = function() {
       gEnter.append('g').attr('class', 'nv-bulletWrap');
       gEnter.append('g').attr('class', 'nv-titles');
 
-      wrap.attr('transform', 'translate(' + margin.left + ',' + ( margin.top + i*(height-margin.top-margin.bottom+1) )+ ')');
+      wrap.attr('transform', 'translate(' + margin.left + ',' + ( margin.top + i*(height-margin.top-margin.bottom+3) )+ ')');
 
       //------------------------------------------------------------
 
