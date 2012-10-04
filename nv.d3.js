@@ -377,13 +377,35 @@ nv.models.bullet = function() {
           .data(rangez);
 
       function legenda_partido() {
-        var conteudo_html = '<table><caption>' + projecao + ' do '+ d.title + '</caption>'
-            conteudo_html += '<thead><tr><th></th><th>2008</th><th>2012</th><tr/></thead><tbody>'
-            conteudo_html += '<tr><th>Eleitos no 1˚ turno</th><td>' + d.dados2008[0] + '</td><td>' + d.dados2012[0] + '</td></tr>'
-            conteudo_html += '<tr><th>Classificados para<br/> o 2˚ turno</th><td>' + (d.dados2008[1] - d.dados2008[0]) + '</td><td>' + (d.dados2012[1] - d.dados2012[0]) + '</td></tr>'
-            conteudo_html += '<tr><th>Total de eleitos<br/>após 2˚ turno</th><td>' + d.valorFinal2008[0] + '</td><td></td></tr>'
-            conteudo_html += '</tbody></table>'
-        return conteudo_html
+            nv.log(projecao)
+            if (projecao=="votos") {
+                var conteudo_html = '<table><caption>Votos recebidos pelo '+ d.title.toUpperCase() + '</caption>'
+                conteudo_html += '<thead><tr><th></th><th>2008</th><th>2012</th><tr/></thead><tbody>'
+                conteudo_html += '<tr><th>Referente ao 1˚ turno</th><td>' + d.dados2008[0] + '</td><td>' + d.dados2012[0] + '</td></tr>'
+                conteudo_html += '<tr><th>Possíveis referente no 2˚ turno</th><td>' + (d.dados2008[1] - d.dados2008[0]) + '</td>'
+                conteudo_html += '<td>' + (d.dados2012[1] - d.dados2012[0]) + '</td></tr>'
+                conteudo_html += '<tr><th>Total após o 2˚ turno</th><td>' + d.valorFinal2008[0] + '</td><td></td></tr>'
+                conteudo_html += '</tbody></table>'
+            
+            } else if (projecao=="eleitorado") {
+                var conteudo_html = '<table><caption>Eleitorado a ser governado pelo '+ d.title.toUpperCase() + '</caption>'
+                conteudo_html += '<thead><tr><th></th><th>2008</th><th>2012</th><tr/></thead><tbody>'
+                conteudo_html += '<tr><th>Referente ao 1˚ turno</th><td>' + d.dados2008[0] + '</td><td>' + d.dados2012[0] + '</td></tr>'
+                conteudo_html += '<tr><th>Possível referente ao 2˚ turno</th><td>' + (d.dados2008[1] - d.dados2008[0]) + '</td>'
+                conteudo_html += '<td>' + (d.dados2012[1] - d.dados2012[0]) + '</td></tr>'
+                conteudo_html += '<tr><th>Total após o 2˚ turno</th><td>' + d.valorFinal2008[0] + '</td><td></td></tr>'
+                conteudo_html += '</tbody></table>'
+            
+            } else {
+                var conteudo_html = '<table><caption>Prefeitos do '+ d.title.toUpperCase() + '</caption>'
+                conteudo_html += '<thead><tr><th></th><th>2008</th><th>2012</th><tr/></thead><tbody>'
+                conteudo_html += '<tr><th>Eleitos no 1˚ turno</th><td>' + d.dados2008[0] + '</td><td>' + d.dados2012[0] + '</td></tr>'
+                conteudo_html += '<tr><th>Classificados para<br/> o 2˚ turno</th><td>' + (d.dados2008[1] - d.dados2008[0]) + '</td>'
+                conteudo_html += '<td>' + (d.dados2012[1] - d.dados2012[0]) + '</td></tr>'
+                conteudo_html += '<tr><th>Total após o 2˚ turno</th><td>' + d.valorFinal2008[0] + '</td><td></td></tr>'
+                conteudo_html += '</tbody></table>'
+            }
+                    return conteudo_html
       }
 
       range.enter().append('rect')
