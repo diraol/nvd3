@@ -464,9 +464,9 @@ nv.models.bullet = function() {
       measure.enter().append('rect')
           .attr('class', function(d, i) { return 'nv-measure nv-s' + i; })
           .attr('width', w0)
-          .attr('height', availableHeight / 3)
+          .attr('height', availableHeight / 2)
           .attr('x', reverse ? x0 : 0)
-          .attr('y', availableHeight / 3)
+          .attr('y', availableHeight / 2)
           .on('mouseover', function(d,i) { 
               dispatch.elementMouseover({
                 conteudo: legenda_partido(),
@@ -484,9 +484,9 @@ nv.models.bullet = function() {
 
       d3.transition(measure)
           .attr('width', w1)
-          .attr('height', availableHeight / 3)
+          .attr('height', availableHeight / 2)
           .attr('x', reverse ? x1 : 0)
-          .attr('y', availableHeight / 3);
+          .attr('y', availableHeight / 4);
 
 
 
@@ -648,8 +648,6 @@ nv.models.bulletChart = function() {
                 '<p>' + e.value + '</p>';
     left = d3.mouse(parentElement)[0]
     top = d3.mouse(parentElement)[1]
-    //nv.log(parentElement.firstChild)
-    //nv.log(parentElement)
     nv.tooltip.show([left, top], e.conteudo, e.value < 0 ? 'e' : 'w', null, offsetElement.parentNode);
   };
 
@@ -658,23 +656,42 @@ nv.models.bulletChart = function() {
   
   function chart(selection) {
     //Calculate maximum X for scaling
-    selection.each(function(d) {
-        nv.log(pilhaJson[pilhaJson.length -1])
-            if (!pilhaJson.length){
-                for (var i=0; i < d.dados2008.length; i++)
-                    if (d.dados2008[i] > forceX)
-                        forceX = d.dados2008[i]
-                for (var i=0; i < d.dados2012.length; i++)
-                    if (d.dados2012[i] > forceX)
-                        forceX = d.dados2012[i]
+
+    function escala(dados) {
+        nv.log(pilhaJson)
+        nv.log(pilhaJson.length)
+        if(pilhaJson.length) {
+            var comparador = pilhaJson[pilhaJson.length - 1] + "_outros"
+            nv.log("jsonAtual: " + jsonAtual)
+        }
+        if(!pilhaJson.length) {
+            //Se pilha vazia, primeiro gráfico, calcula escala
+            return calculaEscala(dados)
+        } else if (comparador == jsonAtual) {
+            nv.log("Comparador: " + comparador)
+            nv.log("jsonAtual: " + jsonAtual)
+            forceX = baseEscala
+            return baseEscala  
+        } else {
+            //Verifica se está transitando de/para estados.
+            return calculaEscala(dados)
+        }
+    }
+
+    function calculaEscala(dados) {
+        dados.each(function(d) {
+            for (var i=0; i < d.dados2008.length; i++)
+                if (d.dados2008[i] > forceX)
+                    forceX = d.dados2008[i]
+            for (var i=0; i < d.dados2012.length; i++)
+                if (d.dados2012[i] > forceX)
+                    forceX = d.dados2012[i]
             baseEscala = forceX
-            } else {
-                forceX = baseEscala
-            }
-            nv.log(forceX)
-            
-     }) 
-    bullet.forceX(forceX)
+        })
+        return forceX
+    }
+
+    bullet.forceX(escala(selection))
     
     selection.each(function(d, i) {
       var container = d3.select(this);
@@ -727,7 +744,7 @@ nv.models.bulletChart = function() {
       gEnter.append('g').attr('class', 'nv-bulletWrap');
       gEnter.append('g').attr('class', 'nv-titles');
 
-      wrap.attr('transform', 'translate(' + margin.left + ',' + ( margin.top + i*(height-margin.top-margin.bottom+3) )+ ')');
+      wrap.attr('transform', 'translate(' + margin.left + ',' + ( margin.top + i*(height-margin.top-margin.bottom+4) )+ ')');
 
       //------------------------------------------------------------
 
