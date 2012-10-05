@@ -384,13 +384,13 @@ nv.models.bullet = function() {
                 else
                     conteudo_html = '<table><caption>Votos recebidos pelo '+ jsonAtual.split("_")[1].toUpperCase() + ' (' + d.title.toUpperCase() + ')</caption>'
                 conteudo_html += '<thead><tr><th></th><th>2008</th><th>2012</th><tr/></thead><tbody>'
-                conteudo_html += '<tr><th>Referente ao 1˚ turno</th>'
+                conteudo_html += '<tr><th>No 1˚ turno</th>'
                     conteudo_html += '<td class="leg20081turno">' + d.dados2008[0] + '</td>'
                     conteudo_html += '<td class="leg20121turno">' + d.dados2012[0] + '</td></tr>'
-                conteudo_html += '<tr><th>Possíveis referente no 2˚ turno</th>'
+                conteudo_html += '<tr><th>Máximo possível no 2˚ turno</th>'
                     conteudo_html += '<td class="leg20082turno">' + (d.dados2008[1] - d.dados2008[0]) + '</td>'
                     conteudo_html += '<td class="leg20122turno">' + (d.dados2012[1] - d.dados2012[0]) + '</td></tr>'
-                conteudo_html += '<tr><th>Total após o 2˚ turno</th>'
+                conteudo_html += '<tr><th>Total (1˚ e 2˚ turnos)</th>'
                     conteudo_html += '<td class="leg2008final">' + d.valorFinal2008[0] + '</td><td></td></tr>'
                 conteudo_html += '</tbody></table>'
             
@@ -401,13 +401,13 @@ nv.models.bullet = function() {
                 else
                     conteudo_html = '<table><caption>Eleitorado a ser governado pelo '+ jsonAtual.split("_")[1].toUpperCase() + ' (' + d.title.toUpperCase() + ')</caption>'
                 conteudo_html += '<thead><tr><th></th><th>2008</th><th>2012</th><tr/></thead><tbody>'
-                conteudo_html += '<tr><th>Referente ao 1˚ turno</th>'
+                conteudo_html += '<tr><th>No 1˚ turno</th>'
                     conteudo_html += '<td class="leg20081turno">' + d.dados2008[0] + '</td>'
                     conteudo_html += '<td class="leg20121turno">' + d.dados2012[0] + '</td></tr>'
-                conteudo_html += '<tr><th>Possível referente ao 2˚ turno</th>'
+                conteudo_html += '<tr><th>Máximo possível no 2˚ turno</th>'
                     conteudo_html += '<td class="leg20082turno">' + (d.dados2008[1] - d.dados2008[0]) + '</td>'
                     conteudo_html += '<td class="leg20122turno">' + (d.dados2012[1] - d.dados2012[0]) + '</td></tr>'
-                conteudo_html += '<tr><th>Total após o 2˚ turno</th>'
+                conteudo_html += '<tr><th>Total (1˚ e 2˚ turnos)</th>'
                     conteudo_html += '<td class="leg2008final">' + d.valorFinal2008[0] + '</td><td></td></tr>'
                 conteudo_html += '</tbody></table>'
             
@@ -424,7 +424,7 @@ nv.models.bullet = function() {
                 conteudo_html += '<tr><th>Classificados para<br/> o 2˚ turno</th>'
                     conteudo_html += '<td class="leg20082turno">' + (d.dados2008[1] - d.dados2008[0]) + '</td>'
                     conteudo_html += '<td class="leg20122turno">' + (d.dados2012[1] - d.dados2012[0]) + '</td></tr>'
-                conteudo_html += '<tr><th>Total após o 2˚ turno</th>'
+                conteudo_html += '<tr><th>Eleitos (1˚ e 2˚ turnos)</th>'
                     conteudo_html += '<td class="leg2008final">' + d.valorFinal2008[0] + '</td><td></td></tr>'
                 conteudo_html += '</tbody></table>'
             }
@@ -437,14 +437,12 @@ nv.models.bullet = function() {
           .attr('height', availableHeight)
           .attr('x', reverse ? x0 : 0)
           .on('mouseover', function(d,i) {
-              if (i>0) {
                 dispatch.elementMouseover({
                     conteudo: legenda_partido(),
                     value: d,
                     label: (i <= 0) ? '' : (i > 1) ? 'Eleitos em<br/>Primeiro Turno<br/>em 2008:' : 'Eleitos em<br/>Segundo Turno</br>em 2008:', //TODO: make these labels a variable
                     pos: [x1(d), heightFromTop]
                 })
-              }
           })
           .on('mouseout', function(d,i) { 
               dispatch.elementMouseout({
@@ -471,7 +469,7 @@ nv.models.bullet = function() {
           .attr('y', availableHeight / 3)
           .on('mouseover', function(d,i) { 
               dispatch.elementMouseover({
-                    conteudo: legenda_partido(),
+                conteudo: legenda_partido(),
                 value: d,
                 label: (i<=0) ? 'Total possível de eleitos<br/>ao fim do segundo turno:' : 'Total de eleitos<br/>em primeiro turno:', //TODO: make these labels a variable
                 pos: [x1(d), heightFromTop]
@@ -645,10 +643,13 @@ nv.models.bulletChart = function() {
   //------------------------------------------------------------
 
   var showTooltip = function(e, parentElement) {
+    var offsetElement = parentElement.parentNode.parentNode
     var content = '<h3>' + e.label + '</h3>' +
                 '<p>' + e.value + '</p>';
     left = d3.mouse(parentElement)[0]
     top = d3.mouse(parentElement)[1]
+    //nv.log(parentElement.firstChild)
+    //nv.log(parentElement)
     nv.tooltip.show([left, top], e.conteudo, e.value < 0 ? 'e' : 'w', null, offsetElement.parentNode);
   };
 
@@ -656,14 +657,23 @@ nv.models.bulletChart = function() {
   
   
   function chart(selection) {
+    //Calculate maximum X for scaling
     selection.each(function(d) {
-           for (var i=0; i < d.dados2008.length; i++)
-               if (d.dados2008[i] > forceX)
-                   forceX = d.dados2008[i]
-           for (var i=0; i < d.dados2012.length; i++)
-               if (d.dados2012[i] > forceX)
-                   forceX = d.dados2012[i]
-     })   
+        nv.log(pilhaJson[pilhaJson.length -1])
+            if (!pilhaJson.length){
+                for (var i=0; i < d.dados2008.length; i++)
+                    if (d.dados2008[i] > forceX)
+                        forceX = d.dados2008[i]
+                for (var i=0; i < d.dados2012.length; i++)
+                    if (d.dados2012[i] > forceX)
+                        forceX = d.dados2012[i]
+            baseEscala = forceX
+            } else {
+                forceX = baseEscala
+            }
+            nv.log(forceX)
+            
+     }) 
     bullet.forceX(forceX)
     
     selection.each(function(d, i) {
