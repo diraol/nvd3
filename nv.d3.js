@@ -658,18 +658,13 @@ nv.models.bulletChart = function() {
     //Calculate maximum X for scaling
 
     function escala(dados) {
-        nv.log(pilhaJson)
-        nv.log(pilhaJson.length)
         if(pilhaJson.length) {
             var comparador = pilhaJson[pilhaJson.length - 1] + "_outros"
-            nv.log("jsonAtual: " + jsonAtual)
         }
         if(!pilhaJson.length) {
             //Se pilha vazia, primeiro gráfico, calcula escala
             return calculaEscala(dados)
         } else if (comparador == jsonAtual) {
-            nv.log("Comparador: " + comparador)
-            nv.log("jsonAtual: " + jsonAtual)
             forceX = baseEscala
             return baseEscala  
         } else {
