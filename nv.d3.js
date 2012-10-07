@@ -325,7 +325,7 @@ nv.models.bullet = function() {
 
   function chart(selection) {
     selection.each(function(d, i) {
-      var availableWidth = width - margin.left - margin.right,
+      var availableWidth = width - margin.left - margin.right - 4,
           availableHeight = height - margin.top - margin.bottom,
           container = d3.select(this),
           mainGroup = this.parentNode.parentNode.getAttribute('transform'),
